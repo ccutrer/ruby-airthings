@@ -1,0 +1,709 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Airthings API",
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://ext-api.airthings.com/v1"
+  } ],
+  "tags" : [ {
+    "name" : "Devices"
+  }, {
+    "name" : "Locations"
+  } ],
+  "paths" : {
+    "/devices/{serialNumber}" : {
+      "get" : {
+        "tags" : [ "Devices" ],
+        "description" : "Get info about a specific Device",
+        "operationId" : "Device info",
+        "parameters" : [ {
+          "name" : "serialNumber",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "userGroupId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "Device with sensors, segments and locations ",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDeviceDetailedResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "AirthingsAccounts" : [ "read:device:current_values" ]
+        } ]
+      }
+    },
+    "/devices" : {
+      "get" : {
+        "tags" : [ "Devices" ],
+        "description" : "Get Devices belonging to the Account",
+        "operationId" : "Devices list",
+        "parameters" : [ {
+          "name" : "showInactive",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        }, {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "userGroupId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "List of devices belonging to user",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetDevicesResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "AirthingsAccounts" : [ "read:device:current_values" ]
+        } ]
+      }
+    },
+    "/devices/{serialNumber}/latest-samples" : {
+      "get" : {
+        "tags" : [ "Devices" ],
+        "description" : "Get latest Samples belonging to a specific Device (latest segment)",
+        "operationId" : "Device samples latest-values",
+        "parameters" : [ {
+          "name" : "serialNumber",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "userGroupId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "Sample response",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SingleSampleResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "AirthingsAccounts" : [ "read:device:current_values" ]
+        } ]
+      }
+    },
+    "/locations" : {
+      "get" : {
+        "tags" : [ "Locations" ],
+        "description" : "Get all added Locations",
+        "operationId" : "Locations list",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "userGroupId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "List of locations for user",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetLocationsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "AirthingsAccounts" : [ "read:device:current_values" ]
+        } ]
+      }
+    },
+    "/locations/{locationId}" : {
+      "get" : {
+        "tags" : [ "Locations" ],
+        "description" : "Get info about a specific Location",
+        "operationId" : "Location info",
+        "parameters" : [ {
+          "name" : "locationId",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "showInactive",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        }, {
+          "name" : "organizationId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "userGroupId",
+          "in" : "query",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "Get location info",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GetLocationResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "AirthingsAccounts" : [ "read:device:current_values" ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "SensorType" : {
+        "type" : "string",
+        "enum" : [ "radonShortTermAvg", "radonLongTermAvg", "temp", "outdoorTemp", "humidity", "outdoorHumidity", "co2", "voc", "pressure", "outdoorPressure", "pressureDifference", "pressureDiffStdDev", "pressureDiffMin", "pressureDiffMax", "light", "lux", "batteryPercentage", "batteryVoltage", "orientation", "pm1", "outdoorPm1", "pm25", "outdoorPm25", "pm10", "outdoorPm10", "mold", "staleAir", "transmissionEfficiency", "virusSurvivalRate", "virusRisk", "windSpeed", "windDirection", "windGust", "dewPoint", "cloudCover", "visibility", "precipitation_probability", "total_precipitation", "outdoorWeather", "hourlyRadonStandardDeviation", "hourlyRadon", "energyWastage", "energyScenarios", "historicVentilationConfidence", "daytimeBaseline", "daytimePeak", "nightBaseline", "historicVentilation", "ventilationRunningConfidence", "occupantsUpper", "occupantsLower", "occupants", "relativeOccupants", "ventilationAmount", "historicVentilationRunning", "ventilationRunning", "relativeVentilationRate", "aggregated", "sla", "pressureAtMinHeight", "pressureAtMaxHeight", "regulationPressure", "regulationHeight", "zeroPressureHeight", "totalPowerLost", "moistGuard", "potentialPowerSaved", "potentialPowerSavedPercent", "zeroHeightPercent", "zone", "controlSignal", "controlStatus", "returnState", "appliedGain", "lastBestControlSignal", "lastBestSignalError", "lastBestControlSignalGain", "lastBestControlSignalRecorded", "messages", "balanceControl", "controlSignalSlot01", "controlSignalSlot02", "controlSignalSlot03", "controlSignalSlot04", "controlSignalSlot05", "controlSignalSlot06", "controlSignalSlot07", "controlSignalSlot08", "inletAirControl", "powerVoltage", "rsrp", "ventController", "subsamplesCount", "subsamples", "balanceInfo", "outdoorNo2", "outdoorO3", "outdoorSo2", "outdoorCo", "outdoorNo", "airly", "airlyNo2", "airlyCo", "airlyNo", "bacnet" ]
+      },
+      "DeviceType" : {
+        "type" : "string",
+        "enum" : [ "WAVE", "WAVE_MIST", "WAVE_GEN2", "WAVE_MINI", "WAVE_PLUS", "WAVE_CO2", "VIEW_PLUS", "VIEW_PLUS_BUSINESS", "VIEW_POLLUTION", "VIEW_RADON", "VIEW_CO2", "SPACE_CO2_MINI", "WAVE_ENHANCE", "HUB", "HOME", "PRO", "CLOUDBERRY", "AIRTIGHT", "AGGREGATED_GROUP", "ZONE_GROUP", "BALANCE_CONTROL", "INLET_AIR_CONTROL", "VENT_CONTROLLER", "AIRLY", "AIRLY_NO2", "AIRLY_CO", "AIRLY_NO", "BREEZOMETER_WEATHER", "BACNET", "UNKNOWN" ]
+      },
+      "GetDeviceDetailedResponse" : {
+        "required" : [ "deviceType", "id", "location", "segment", "sensors" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "deviceType" : {
+            "$ref" : "#/components/schemas/DeviceType"
+          },
+          "sensors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SensorType"
+            }
+          },
+          "segment" : {
+            "$ref" : "#/components/schemas/SegmentSimpleResponse"
+          },
+          "location" : {
+            "$ref" : "#/components/schemas/LocationSimpleResponse"
+          }
+        }
+      },
+      "LocationSimpleResponse" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SegmentSimpleResponse" : {
+        "required" : [ "active", "id", "name", "started" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "started" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "active" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "GetDevicesResponse" : {
+        "type" : "object",
+        "properties" : {
+          "devices" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GetDeviceDetailedResponse"
+            }
+          }
+        }
+      },
+      "SingleSampleData" : {
+        "type" : "object",
+        "properties" : {
+          "battery" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "co2" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "humidity" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "light" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "lux" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "mold" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "pm1" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "pm10" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "pm25" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "pressure" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "pressureDifference" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "radonShortTermAvg" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "rssi" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "sla" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "temp" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "time" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "virusRisk" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "voc" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorTemp" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorHumidity" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorPressure" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorPm10" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorPm1" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorPm25" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorNo2" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorO3" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorSo2" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorCo" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "outdoorNo" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignal" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignalSlot01" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignalSlot02" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignalSlot03" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignalSlot04" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignalSlot05" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignalSlot06" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignalSlot07" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "controlSignalSlot08" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "regulationPressure" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "regulationHeight" : {
+            "type" : "number",
+            "format" : "double"
+          },
+          "relayDeviceType" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SingleSampleResponse" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/SingleSampleData"
+          }
+        }
+      },
+      "Location" : {
+        "required" : [ "id", "labels", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "labels" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "LocalTime" : {
+        "type" : "object",
+        "properties" : {
+          "hour" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minute" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "second" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "nano" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "LocationUsage" : {
+        "type" : "object",
+        "properties" : {
+          "closed" : {
+            "type" : "boolean"
+          },
+          "from" : {
+            "$ref" : "#/components/schemas/LocalTime"
+          },
+          "to" : {
+            "$ref" : "#/components/schemas/LocalTime"
+          },
+          "nofMinutesOpen" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "DeviceSimpleResponse" : {
+        "required" : [ "deviceType", "id", "segment" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "deviceType" : {
+            "$ref" : "#/components/schemas/DeviceType"
+          },
+          "segment" : {
+            "$ref" : "#/components/schemas/SegmentSimpleResponse"
+          }
+        }
+      },
+      "GetLocationResponse" : {
+        "required" : [ "devices", "id", "labels", "lat", "lng", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "labels" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "devices" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/DeviceSimpleResponse"
+            }
+          },
+          "address" : {
+            "type" : "string"
+          },
+          "countryCode" : {
+            "type" : "string"
+          },
+          "lat" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "lng" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "buildingType" : {
+            "type" : "string",
+            "enum" : [ "SCHOOL", "RESIDENTIAL", "APARTMENT", "KINDERGARTEN", "HEALTHCENTER", "OFFICE", "OTHER" ]
+          },
+          "buildingYear" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "ventilationType" : {
+            "type" : "string",
+            "enum" : [ "NATURAL", "MECHANICAL", "BALANCED" ]
+          },
+          "timezone" : {
+            "type" : "string"
+          },
+          "usageHours" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/LocationUsage"
+            }
+          },
+          "buildingHeight" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "buildingSize" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "buildingVolume" : {
+            "type" : "number",
+            "format" : "float"
+          },
+          "floors" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "DeviceSampleResponse" : {
+        "required" : [ "data", "id", "segment" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/SingleSampleData"
+          },
+          "segment" : {
+            "$ref" : "#/components/schemas/SegmentSimpleResponse"
+          }
+        }
+      },
+      "GetLocationsResponse" : {
+        "required" : [ "locations" ],
+        "type" : "object",
+        "properties" : {
+          "locations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Location"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "AirthingsAccounts" : {
+        "type" : "oauth2",
+        "flows" : {
+          "clientCredentials" : {
+            "tokenUrl" : "https://accounts-api.airthings.com/v1/token",
+            "scopes" : {
+              "read:device:current_values" : "Allowing a user to read current data from devices in their account"
+            }
+          }
+        }
+      }
+    }
+  }
+}
