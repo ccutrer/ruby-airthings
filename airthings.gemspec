@@ -10,10 +10,16 @@ Gem::Specification.new do |s|
   s.email       = ["cody@cutrer.us"]
   s.homepage    = "https://github.com/ccutrer/ruby-airthings"
   s.summary     = "Airthings Consumer API Ruby Gem"
-  s.description = ""
   s.license     = "MIT"
+  s.metadata["rubygems_mfa_required"] = "true"
+
+  s.bindir = "exe"
+  s.executables = Dir["exe/*"].map { |f| File.basename(f) }
+  s.files = Dir["{exe,lib}/**/*"]
+
   s.required_ruby_version = ">= 2.5"
 
+  s.add_dependency "homie-mqtt", "~> 1.6"
   s.add_dependency "oauth2", "~> 2.0"
   s.add_dependency "typhoeus", "~> 1.0"
 
@@ -24,9 +30,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rubocop-performance", "~> 1.12"
   s.add_development_dependency "rubocop-rake", "~> 0.6"
   s.add_development_dependency "rubocop-rspec", "~> 2.11"
-
-  s.files         = `find *`.split("\n").uniq.sort.reject(&:empty?)
-  s.executables   = []
-  s.require_paths = ["lib"]
-  s.metadata["rubygems_mfa_required"] = "true"
 end

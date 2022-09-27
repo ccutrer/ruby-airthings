@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     airthings (1.0.0)
+      homie-mqtt (~> 1.6)
       oauth2 (~> 2.0)
       typhoeus (~> 1.0)
 
@@ -18,11 +19,15 @@ GEM
     faraday-net_http (3.0.0)
     ffi (1.15.5)
     hashie (5.0.0)
+    homie-mqtt (1.6.3)
+      mqtt-ccutrer (~> 1.0, >= 1.0.3)
+      ruby2_keywords (~> 0.0.5)
     io-console (0.5.11)
     irb (1.4.1)
       reline (>= 0.3.0)
     json (2.6.2)
     jwt (2.5.0)
+    mqtt-ccutrer (1.0.3)
     multi_xml (0.6.0)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)

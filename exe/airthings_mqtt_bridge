@@ -1,0 +1,84 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "airthings"
+require "airthings/oauth2"
+require "homie-mqtt"
+require "optparse"
+
+refresh = 60.0
+
+options = OptionParser.new do |opts|
+  opts.banner = "Usage: airthings_mqtt_bridge ID SECRET MQTT_URI [options]"
+
+  opts.on("--refresh-interval=INTERVAL", "Refresh interval (default 60s)") { |v| refresh = v.to_f }
+  opts.on("-h", "--help", "Prints this help") do
+    puts opts
+    exit
+  end
+end
+
+options.parse!
+
+unless ARGV.length == 3
+  puts options
+  exit 1
+end
+
+Airthings.configure do |config|
+  config.id = ARGV[0]
+  config.secret = ARGV[1]
+end
+
+api_instance = Airthings::DevicesApi.new
+
+homie = MQTT::Homie::Device.new("airthings", "Airthings Devices", mqtt: { uri: ARGV[2], reconnect_limit: 3 })
+
+INVERTED_ATTRIBUTE_MAP = Airthings::SingleSampleData.attribute_map.invert.freeze
+ATTRIBUTE_UNITS = {
+  battery: "%",
+  co2: "ppm",
+  humidity: "%",
+  pressure: "mbar",
+  radon_short_term_avg: "mBq",
+  rssi: "dB",
+  temp: "°C",
+  voc: "ppb",
+  outdoor_temp: "°C",
+  outdoor_humidity: "%",
+  outdoor_pressure: "mbar"
+}.freeze
+
+devices = api_instance.devices_list.devices
+devices.each do |device|
+  next if device.sensors.empty?
+
+  samples = api_instance.device_samples_latest_values(device.id).data
+  node = homie.node(device.id, device.device_type, device.device_type)
+  device.sensors.each do |sensor|
+    method = INVERTED_ATTRIBUTE_MAP[sensor.to_sym]
+    value = samples.send(method)
+    node.property(method.to_s.tr("_", "-"), sensor, value.class.name.downcase.to_sym, value,
+                  unit: ATTRIBUTE_UNITS[method])
+  end
+end
+
+homie.publish
+
+loop do
+  devices.each do |device|
+    next if device.sensors.empty?
+
+    samples = api_instance.device_samples_latest_values(device.id).data
+    homie.mqtt.batch_publish do
+      node = homie[device.id]
+      device.sensors.each do |sensor|
+        method = INVERTED_ATTRIBUTE_MAP[sensor.to_sym]
+        property = node[method.to_s.tr("_", "-")]
+        property.value = samples.send(method)
+      end
+    end
+  end
+
+  sleep refresh
+end
