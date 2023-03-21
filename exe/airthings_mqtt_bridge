@@ -57,7 +57,11 @@ devices.each do |device|
   node = homie.node(device.id, device.device_type, device.device_type)
   device.sensors.each do |sensor|
     method = INVERTED_ATTRIBUTE_MAP[sensor.to_sym]
+    next unless method
+
     value = samples.send(method)
+    next unless value
+
     node.property(method.to_s.tr("_", "-"), sensor, value.class.name.downcase.to_sym, value,
                   unit: ATTRIBUTE_UNITS[method])
   end
@@ -74,7 +78,11 @@ loop do
       node = homie[device.id]
       device.sensors.each do |sensor|
         method = INVERTED_ATTRIBUTE_MAP[sensor.to_sym]
+        next unless method
+
         property = node[method.to_s.tr("_", "-")]
+        next unless property
+
         property.value = samples.send(method)
       end
     end
